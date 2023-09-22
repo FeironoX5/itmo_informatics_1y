@@ -22,8 +22,8 @@ digits = {
 
 def from_custom_base(x, b):
     res = 0
-    i = x.index('.') - 1
-    for c in list(x):  # 123.43
+    i = x.index('.') - 1 if '.' in x else len(x) - 1
+    for c in list(x):
         if c != '.':
             d = digits[c]
             res += d * (b ** i)
@@ -34,17 +34,20 @@ def from_custom_base(x, b):
 def to_custom_base(x, b, prec=8):  # вопрос?? можно ирр. x?
     # Получим b-разложение x
     k = math.floor(math.log(x, b)) + 1
-    # Минимальная степень, в которую нужно
-    # возвести b, чтобы получилось число больше x
     res = ""
     for i in range(k - 1, -prec - 1, -1):
-        digit = math.floor((x / (b ** i)) % b)  # целую часть текущей цифры
+        digit = math.floor((x / (b ** i)) % b)
         x -= digit * (b ** i)
         res += ('.' + str(digit) if len(res) == k else str(digit))
     return res
 
 
-from_base = int(input('Из СИ: '))
-to_base = int(input('В СИ: '))
-x = input('Число: ')
-print(to_custom_base(from_custom_base(x, from_base), to_base))
+def convert(x, from_base, to_base):
+    return to_custom_base(from_custom_base(x, from_base), to_base)
+
+
+if __name__ == '__main__':
+    x = input('Число: ')
+    from_base = int(input('Из СИ: '))
+    to_base = int(input('В СИ: '))
+    print(convert(x, from_base, to_base))
